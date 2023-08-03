@@ -11,7 +11,7 @@ db:
   db_name: 'hospital'
   username: 'guest'
   migration_path: 'migrations/pg'
-  migration_version: 3
+  migration_version: 4
 
 
 token:

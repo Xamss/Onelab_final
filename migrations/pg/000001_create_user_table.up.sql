@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS accounts (
     username varchar(50) NOT NULL,
     firstname varchar(50) NOT NULL,
     lastname varchar(50) NOT NULL,
-    password varchar(50) NOT NULL,
+    password varchar(255) NOT NULL,
     email varchar(255) UNIQUE NOT NULL
 );

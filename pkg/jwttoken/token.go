@@ -42,6 +42,7 @@ func (j *JWTToken) CreateToken(userID int64, duration time.Duration) (string, er
 }
 
 func (j *JWTToken) VerifyToken(token string) (*JWTPayload, error) {
+	fmt.Printf(token)
 	keyFunc := func(t *jwt.Token) (interface{}, error) {
 		_, ok := t.Method.(*jwt.SigningMethodHMAC)
 		if ok {

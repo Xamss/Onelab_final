@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/georgysavva/scany/pgxscan"
+	"strings"
 	"xamss.onelab.final/internal/registration/domain"
 )
 
@@ -14,7 +15,7 @@ func (p *Postgres) CreateAccount(ctx context.Context, u *domain.User) error {
 			                firstname, 
 			                lastname, 
 			                email,
-			                hashed_password 
+			                password 
 			                )
 		VALUES ($1, $2, $3, $4, $5)
 	`, accountTable)
@@ -27,12 +28,12 @@ func (p *Postgres) CreateAccount(ctx context.Context, u *domain.User) error {
 	return nil
 }
 
-func (p *Postgres) GetAccount(ctx context.Context, id int64) (*domain.User, error) {
+func (p *Postgres) GetAccount(ctx context.Context, username string) (*domain.User, error) {
 	user := new(domain.User)
 
-	query := fmt.Sprintf("SELECT id, username, firstname, lastname, email, password FROM %s WHERE id = $1", accountTable)
+	query := fmt.Sprintf("SELECT id, username, firstname, lastname, email, password FROM %s WHERE username = $1", accountTable)
 
-	err := pgxscan.Get(ctx, p.Pool, user, query, id)
+	err := pgxscan.Get(ctx, p.Pool, user, query, strings.TrimSpace(username))
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +46,7 @@ func (p *Postgres) CreateAppointment(ctx context.Context, a *domain.Appointment)
 		INSERT INTO %s ( 
 			                patient_id, 
 			                doctor_id, 
-			                time,
+			                time
 			                )
 		VALUES ($1, $2, $3)
 	`, appointmentTable)
@@ -75,9 +76,10 @@ func (p *Postgres) GetAppointmentsByAccountID(ctx context.Context, id int64) ([]
 	query := fmt.Sprintf(`
 		SELECT id, patient_id, doctor_id, time
 		FROM %s
+		WHERE patient_id = $1
 	`, appointmentTable)
 
-	rows, err := p.Pool.Query(ctx, query)
+	rows, err := p.Pool.Query(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +118,7 @@ func (p *Postgres) GetDoctorsBySpeciality(ctx context.Context, speciality string
 		WHERE speciality = $1
 	`
 
-	rows, err := p.Pool.Query(ctx, query, speciality)
+	rows, err := p.Pool.Query(ctx, query, strings.TrimSpace(speciality))
 	if err != nil {
 		return nil, err
 	}

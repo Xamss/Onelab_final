@@ -2,6 +2,7 @@ package main
 
 import (
 	"xamss.onelab.final/internal/config"
+	"xamss.onelab.final/internal/registration/app"
 )
 
 func main() {
@@ -10,4 +11,8 @@ func main() {
 		panic(err)
 	}
 
+	err = app.Run(cfg)
+	if err != nil {
+		panic(err)
+	}
 }

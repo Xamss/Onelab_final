@@ -5,16 +5,14 @@ import "github.com/gin-gonic/gin"
 func (h *Handler) InitRouter() *gin.Engine {
 	router := gin.Default()
 
-	router.POST("/signup")
+	router.POST("/signup", h.createUser)
+	router.POST("/login", h.loginUser)
 
-	doctorAPI := router.Group("/doctor")
-	patientAPI := router.Group("/client")
+	patientAPI := router.Group("/user")
 
-	doctorAPI.GET("/list")
-	doctorAPI.POST("/appointment/")
-
-	patientAPI.POST("/orders")
-	patientAPI.POST("/order/")
+	patientAPI.Use(h.authMiddleware())
+	patientAPI.POST("/appointment/create", h.createAppointment)
+	patientAPI.POST("/appointment/")
 
 	return router
 }
