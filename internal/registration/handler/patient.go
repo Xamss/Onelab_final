@@ -8,6 +8,19 @@ import (
 	"xamss.onelab.final/internal/registration/domain"
 )
 
+// createUser registration new user
+//
+//	@Summary      Create user
+//	@Description  Create new user
+//	@Tags         auth
+//	@Accept       json
+//	@Produce      json
+//	@Param req body api.RegisterRequest true "req body"
+//
+//	@Success      201
+//	@Failure      400  {object}  api.Error
+//	@Failure      500  {object}  api.Error
+//	@Router       /user/register [post]
 func (h *Handler) createUser(ctx *gin.Context) {
 	var req api.RegisterRequest
 
@@ -41,6 +54,19 @@ func (h *Handler) createUser(ctx *gin.Context) {
 	ctx.Status(http.StatusCreated)
 }
 
+// loginUser registration new user
+//
+//	@Summary      User logs in
+//	@Description  After successfully identifying oneself, the user is provided with AccessToken for authorization purposes
+//	@Tags         auth
+//	@Accept       json
+//	@Produce      json
+//	@Param req body api.LoginRequest true "req body"
+//
+//	@Success      200  {object}  api.Ok
+//	@Failure      400  {object}  api.Error
+//	@Failure      500  {object}  api.Error
+//	@Router       /user/login [post]
 func (h *Handler) loginUser(ctx *gin.Context) {
 	var req api.LoginRequest
 
@@ -70,6 +96,20 @@ func (h *Handler) loginUser(ctx *gin.Context) {
 	})
 }
 
+// createAppointment registration new user
+//
+//	@Summary      User creates a new appointment
+//	@Description  Authorized user can create appointments
+//	@Tags         appointment
+//	@Accept       json
+//	@Produce      json
+//	@Param req body domain.Appointment true "req body"
+//
+//	@Success      201  {object}  api.Ok
+//	@Failure      400  {object}  api.Error
+//	@Failure      400  {object}  api.Error
+//	@Failure      500  {object}  api.Error
+//	@Router       /user/appointment/create [post]
 func (h *Handler) createAppointment(ctx *gin.Context) {
 
 	userID, ok := ctx.MustGet(authUserID).(int64)

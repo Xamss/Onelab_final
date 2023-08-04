@@ -22,6 +22,14 @@ pip install foobar
   + Analysis
   + Appointment
 
+1st Microservice:
++ Authorization
+
+2nd Microservice:
++ Appointment
+
+3rd Microservice:
++ 
 ## Usage
 
 ```python

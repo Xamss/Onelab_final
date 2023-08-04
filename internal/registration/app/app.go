@@ -10,20 +10,23 @@ import (
 	"xamss.onelab.final/internal/registration/service"
 	"xamss.onelab.final/pkg/httpserver"
 	"xamss.onelab.final/pkg/jwttoken"
+	"xamss.onelab.final/pkg/postgres"
 )
 
 func Run(cfg *config.Config) error {
-	db, err := pgrepo.New(
-		pgrepo.WithHost(cfg.DB.Host),
-		pgrepo.WithPort(cfg.DB.Port),
-		pgrepo.WithDBName(cfg.DB.DBName),
-		pgrepo.WithUsername(cfg.DB.Username),
-		pgrepo.WithPassword(cfg.DB.Password),
+	db, err := postgres.New(
+		postgres.WithHost(cfg.DB.Host),
+		postgres.WithPort(cfg.DB.Port),
+		postgres.WithDBName(cfg.DB.DBName),
+		postgres.WithUsername(cfg.DB.Username),
+		postgres.WithPassword(cfg.DB.Password),
 	)
 	if err != nil {
 		log.Printf("connection to DB err: %s", err.Error())
 		return err
 	}
+	repo := pgrepo.New(db.Pool)
+
 	log.Println("connection success")
 
 	migration := pgrepo.NewMigrate(cfg)
@@ -34,7 +37,7 @@ func Run(cfg *config.Config) error {
 	}
 
 	token := jwttoken.NewToken(cfg.Token.SecretKey)
-	srvs := service.New(db, token, cfg)
+	srvs := service.New(repo, token, cfg)
 	hndlr := handler.NewHandler(srvs)
 	server := httpserver.New(
 		hndlr.InitRouter(),
